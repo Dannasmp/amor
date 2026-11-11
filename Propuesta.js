@@ -82,9 +82,9 @@ const FIREBASE_CONFIG = {
   appId: "1:408819531565:web:3deb097257cad4396e9da4"
 };
 const EMAILJS_CONFIG = {
-  serviceId: "",
-  templateId: "",
-  publicKey: ""
+  serviceId: "service_i2mjnns",
+  templateId: "template_gsxd9kk",
+  publicKey: "FdRKJZ8Hyic0dkRvf"
 };
 
 async function sendAcceptanceNotification() {
@@ -187,7 +187,7 @@ function applyEditableContent(data) {
 }
 
 // El inicio se comparte con index y persiste entre visitas.
-const COUNTER_KEY = "inicio_noviazgo";
+const COUNTER_KEY = "inicio_noviazgo_respuesta_v2";
 let counterStart = null;
 let counterTimer = null;
 
@@ -213,10 +213,8 @@ function startCounter(timestamp) {
   counterTimer = setInterval(updateCounter, 1000);
 }
 
-const configuredStart = () => new Date(`${CONFIG.startDate}T00:00:00`).getTime();
-
 $("#yes").addEventListener("click", async () => {
-  const timestamp = configuredStart();
+  const timestamp = Date.now();
   try { localStorage.setItem(COUNTER_KEY, timestamp); } catch (error) {}
   startCounter(timestamp);
   $("#days").closest(".counter").scrollIntoView({ behavior: "smooth", block: "center" });
@@ -271,7 +269,7 @@ $("#no").addEventListener("click", () => {
 
 try {
   const savedStart = Number(localStorage.getItem(COUNTER_KEY));
-  if (Number.isFinite(savedStart) && savedStart > 0) startCounter(configuredStart());
+  if (Number.isFinite(savedStart) && savedStart > 0) startCounter(savedStart);
 } catch (error) {}
 
 // Timeline (de más antiguo a más reciente)
@@ -375,7 +373,7 @@ renderTimeline();
     btn.disabled = true;
     gate.classList.add("is-opening");
     setTimeout(() => {
-      bloomAndReveal(false);
+      window.location.assign("1G.html");
     }, reduce ? 120 : 500);
   });
 })();
