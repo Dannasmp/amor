@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fbf1f1">
+<title>Iniciar sesión · Propuesta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="Propuesta.css">
+</head>
+<body class="login-page">
+<main class="login-panel">
+  <a class="login-back" href="Propuesta.html">&#8592; Volver a Propuesta</a>
+  <h1>Iniciar sesión</h1>
+  <p>Acceso para administrar los recuerdos.</p>
+  <form class="gallery-login" id="loginForm">
+    <label>Correo<input id="loginEmail" type="email" value="dannasmp44@gmail.com" autocomplete="username" required></label>
+    <label>Contraseña<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+    <small>Al crear el perfil, usa una contraseña única de al menos 12 caracteres.</small>
+    <button class="gallery-submit" type="submit">Entrar</button>
+    <button class="gallery-cancel" id="createAccount" type="button">Crear perfil</button>
+    <button class="gallery-cancel" id="resetPassword" type="button">Restablecer contraseña</button>
+    <button class="gallery-cancel" id="resendVerification" type="button" hidden>Reenviar verificación</button>
+  </form>
+  <p class="gallery-status" id="loginStatus" aria-live="polite"></p>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCKw_RkiVSiu-1ncaSpEAitLwirUaUM7aM",
+  authDomain: "apiproject-1b89e.firebaseapp.com",
+  projectId: "apiproject-1b89e",
+  storageBucket: "apiproject-1b89e.firebasestorage.app",
+  messagingSenderId: "408819531565",
+  appId: "1:408819531565:web:3deb097257cad4396e9da4"
+};
+
+const ADMIN_EMAIL = "dannasmp44@gmail.com";
+const loginForm = document.querySelector("#loginForm");
+const loginStatus = document.querySelector("#loginStatus");
+const loginEmail = document.querySelector("#loginEmail");
+const loginPassword = document.querySelector("#loginPassword");
+const submitButton = loginForm.querySelector("button[type='submit']");
+const createAccountButton = document.querySelector("#createAccount");
+const resetPasswordButton = document.querySelector("#resetPassword");
+const resendVerificationButton = document.querySelector("#resendVerification");
+
+function showAuthError(error) {
+  const messages = {
+    "auth/user-not-found": "No existe un perfil todavía. Pulsa «Crear perfil».",
+    "auth/invalid-credential": "Correo o contraseña incorrectos. Si aún no tienes perfil, pulsa «Crear perfil».",
+    "auth/invalid-login-credentials": "Correo o contraseña incorrectos. Si aún no tienes perfil, pulsa «Crear perfil».",
+    "auth/wrong-password": "La contraseña no coincide. Puedes restablecerla desde aquí.",
+    "auth/too-many-requests": "Demasiados intentos. Espera un momento antes de volver a probar.",
+    "auth/network-request-failed": "No hay conexión con Firebase. Revisa internet e inténtalo de nuevo.",
+    "auth/unauthorized-domain": "Este dominio no está autorizado en Firebase Authentication.",
+    "auth/operation-not-allowed": "Activa Correo electrónico/Contraseña en Firebase Authentication."
+  };
+  loginStatus.textContent = messages[error.code] || `No se pudo completar la operación (${error.code || "error"}).`;
+}
+
+try {
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  const auth = firebase.auth();
+  auth.onAuthStateChanged(user => {
+    resendVerificationButton.hidden = !user || user.emailVerified;
+    if (user?.emailVerified && user.email === ADMIN_EMAIL) {
+      window.location.replace("Propuesta.html");
+    } else if (user && !user.emailVerified) {
+      loginStatus.textContent = "Verifica tu correo antes de administrar la galería, o reenvía el mensaje.";
+    }
+  });
+  loginForm.addEventListener("submit", event => {
+    event.preventDefault();
+    submitButton.disabled = true;
+    loginStatus.textContent = "Iniciando sesión…";
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value))
+      .then(({ user }) => {
+        if (user.email !== ADMIN_EMAIL) throw new Error("unauthorized-email");
+        if (!user.emailVerified) throw new Error("unverified-email");
+        window.location.replace("Propuesta.html");
+      })
+      .catch(error => {
+        if (error.message === "unverified-email") loginStatus.textContent = "Verifica el correo de confirmación antes de iniciar sesión.";
+        else if (error.message === "unauthorized-email") loginStatus.textContent = "Este correo no tiene acceso de administración.";
+        else showAuthError(error);
+        submitButton.disabled = false;
+      });
+  });
+  createAccountButton.addEventListener("click", () => {
+    const email = loginEmail.value.trim().toLowerCase();
+    const password = loginPassword.value;
+    if (email !== ADMIN_EMAIL) {
+      loginStatus.textContent = `El perfil administrador debe usar ${ADMIN_EMAIL}.`;
+      return;
+    }
+    if (password.length < 12) {
+      loginStatus.textContent = "Elige una contraseña única de al menos 12 caracteres.";
+      return;
+    }
+    createAccountButton.disabled = true;
+    submitButton.disabled = true;
+    loginStatus.textContent = "Creando perfil…";
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => auth.createUserWithEmailAndPassword(email, password))
+      .then(({ user }) => user.sendEmailVerification())
+      .then(() => auth.signOut())
+      .then(() => {
+        loginStatus.textContent = "Perfil creado. Confirma el correo que te enviamos y después inicia sesión.";
+        loginPassword.value = "";
+      })
+      .catch(error => {
+        loginStatus.textContent = error.code === "auth/email-already-in-use"
+          ? "Ya existe un perfil con ese correo. Prueba iniciar sesión."
+          : (showAuthError(error), loginStatus.textContent);
+      })
+      .finally(() => {
+        createAccountButton.disabled = false;
+        submitButton.disabled = false;
+      });
+  });
+  resetPasswordButton.addEventListener("click", () => {
+    loginStatus.textContent = "Enviando enlace para restablecer la contraseña…";
+    auth.sendPasswordResetEmail(loginEmail.value.trim())
+      .then(() => { loginStatus.textContent = "Si existe una cuenta con ese correo, recibirás un enlace para restablecer la contraseña."; })
+      .catch(showAuthError);
+  });
+  resendVerificationButton.addEventListener("click", () => {
+    const user = auth.currentUser;
+    if (!user || user.emailVerified) return;
+    user.sendEmailVerification()
+      .then(() => { loginStatus.textContent = "Te enviamos otro correo de verificación."; })
+      .catch(showAuthError);
+  });
+} catch (error) {
+  loginStatus.textContent = "No se pudo conectar con el servicio de acceso.";
+}
+</script>
+</body>
+</html>

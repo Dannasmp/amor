@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ana y Danna · Un recuerdo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="Propuesta.css">
+</head>
+<body class="locked">
+
+<!-- Entrada: sobre + flores (reemplaza TODO el <div id="gate">…</div> actual) -->
+<div id="gate">
+  <div class="gate-brand">AMON QR</div>
+
+  <button class="envelope-btn" id="envelopeBtn" aria-label="Abrir el sobre">
+    <span class="gate-kicker">Tienes un regalo</span>
+
+    <span class="envelope" aria-hidden="true">
+      <span class="env-art">
+        <!-- fondo del sobre -->
+        <svg class="env-back" viewBox="0 0 300 200" preserveAspectRatio="none"><rect width="300" height="200" fill="#d8bd90"/></svg>
+
+        <!-- carta que asoma -->
+        <span class="paper"></span>
+
+        <!-- frente del sobre (tres triángulos) -->
+        <svg class="env-front" viewBox="0 0 300 200" preserveAspectRatio="none">
+          <path d="M0 0 L150 112 L0 200Z" fill="#e4cc9f"/>
+          <path d="M300 0 L150 112 L300 200Z" fill="#dec495"/>
+          <path d="M0 200 L150 100 L300 200Z" fill="#ecd8ae"/>
+          <path d="M0 0 L150 112 L300 0 M0 200 L150 100 L300 200" fill="none" stroke="#b99660" stroke-width="1" opacity=".55"/>
+        </svg>
+
+        <!-- solapa -->
+        <span class="flap">
+          <span class="flap-face flap-front">
+            <svg viewBox="0 0 300 112" preserveAspectRatio="xMidYMid meet">
+              <!-- tallo central con campanillas rosas -->
+              <path d="M150 92 C150 70 148 50 152 24" stroke="#5f8f4e" stroke-width="2" fill="none"/>
+              <path d="M150 80 C140 70 136 62 134 54 M151 70 C160 62 164 54 166 46" stroke="#5f8f4e" stroke-width="1.6" fill="none"/>
+              <g fill="#e98ca3"><ellipse cx="152" cy="22" rx="5" ry="8"/><ellipse cx="143" cy="38" rx="4.5" ry="7.5" transform="rotate(-18 143 38)"/><ellipse cx="162" cy="40" rx="4.5" ry="7.5" transform="rotate(16 162 40)"/><ellipse cx="134" cy="52" rx="4" ry="7" transform="rotate(-25 134 52)"/><ellipse cx="167" cy="52" rx="4" ry="7" transform="rotate(22 167 52)"/></g>
+              <path d="M138 78 C128 70 126 62 130 56 M162 78 C172 70 174 62 170 56" stroke="#6f9a5c" stroke-width="1.4" fill="none"/>
+              <!-- ramita morada -->
+              <path d="M112 84 C110 64 100 50 90 38" stroke="#6a8f58" stroke-width="1.6" fill="none"/>
+              <g fill="#7a55a8"><circle cx="90" cy="38" r="4.2"/><circle cx="100" cy="46" r="4"/><circle cx="106" cy="58" r="3.8"/></g>
+              <g fill="#c26a9c"><circle cx="84" cy="50" r="3.6"/><circle cx="94" cy="62" r="3.4"/></g>
+              <!-- ramita verde -->
+              <path d="M190 84 C196 66 208 52 220 40" stroke="#7d9a8c" stroke-width="1.6" fill="none"/>
+              <g fill="#8aa89b"><ellipse cx="222" cy="40" rx="3.6" ry="9" transform="rotate(40 222 40)"/><ellipse cx="206" cy="52" rx="3.4" ry="9" transform="rotate(-50 206 52)"/><ellipse cx="214" cy="60" rx="3.4" ry="9" transform="rotate(30 214 60)"/><ellipse cx="198" cy="68" rx="3.2" ry="8" transform="rotate(-55 198 68)"/></g>
+            </svg>
+          </span>
+          <span class="flap-face flap-back"></span>
+          <span class="seal"></span>
+        </span>
+      </span>
+
+      <!-- las flores se generan aquí con JS -->
+      <span class="bloom" id="bloom"></span>
+    </span>
+
+    <span class="gate-from">Para mis hoyuelitos lindos · De Danna <i>♥</i></span>
+    <span class="gate-hint">Toca para abrir</span>
+  </button>
+</div>
+
+<main class="wrap" id="main" aria-hidden="true">
+
+  <!-- Portada -->
+  <header class="hero">
+    <div class="photo" data-photo="hero"></div>
+    <div class="hero-text">
+      <div class="label">Para</div>
+      <h1 id="toName"></h1>
+      <div class="names" id="coupleNames"></div>
+      <div class="from" id="fromLine"></div>
+    </div>
+  </header>
+
+  <!-- Galería -->
+  <section>
+    <div class="label" style="text-align:center">Galería</div>
+    <h2>Momentos que no se borran</h2>
+    <div class="carousel" id="carousel" tabindex="0" aria-label="Galería de fotos"></div>
+    <div class="controls">
+      <button id="prev" aria-label="Foto anterior">‹</button>
+      <div class="dots" id="dots"></div>
+      <button id="next" aria-label="Foto siguiente">›</button>
+    </div>
+    <div class="gallery-actions">
+      <button id="galleryLogin" class="gallery-login-link" type="button" aria-label="Iniciar sesión" title="Iniciar sesión">❤️</button>
+      <button id="galleryLogout" type="button" hidden>Cerrar sesión</button>
+      <button id="galleryAdd" type="button" hidden>Subir fotos o videos</button>
+      <button id="galleryArrange" type="button" hidden>Organizar galería</button>
+      <button id="contentEdit" type="button" hidden>Editar contenido</button>
+      <input id="galleryInput" type="file" accept="image/*,video/*" multiple hidden>
+    </div>
+    <form class="content-editor" id="contentEditor" hidden>
+      <label>Nombre para la portada<input id="editTo" required></label>
+      <label>Nombres de la pareja<input id="editCouple" required></label>
+      <label>Firma de portada<input id="editFrom" required></label>
+      <label>Lugar especial<input id="editPlace" required></label>
+      <label>Pregunta<input id="editQuestion" required></label>
+      <label>Texto del botón afirmativo<input id="editAnswer" required></label>
+      <label>Mensaje final<input id="editFinalMessage" required></label>
+      <label>Firma final<input id="editFinalSign" required></label>
+      <label>Foto de portada<select id="editHeroPhoto"></select></label>
+      <label class="content-editor-wide">Subir portada desde tu dispositivo<input id="editHeroUpload" type="file" accept="image/*"><small id="heroUploadName" aria-live="polite">Elige una imagen para previsualizarla y ajustarla.</small></label>
+      <div class="hero-edit-preview-frame content-editor-wide"><img id="heroEditPreview" alt="Vista previa del encuadre de portada"></div>
+      <label>Encuadre horizontal<input id="editHeroX" type="range" min="0" max="100" value="50"><output id="editHeroXValue">50%</output></label>
+      <label>Encuadre vertical<input id="editHeroY" type="range" min="0" max="100" value="50"><output id="editHeroYValue">50%</output></label>
+      <label>Zoom de portada<input id="editHeroZoom" type="range" min="100" max="180" value="100"><output id="editHeroZoomValue">100%</output></label>
+      <label>Foto final<select id="editFinalPhoto"></select></label>
+      <label class="content-editor-wide">Carta<textarea id="editLetter" rows="10" required></textarea><small>Separa los párrafos con una línea en blanco.</small></label>
+      <div class="events-editor-section content-editor-wide">
+        <div class="events-editor-head">
+          <strong>Recuerdos de la línea del tiempo</strong>
+          <button class="gallery-submit" id="addTimelineEvent" type="button">Añadir recuerdo</button>
+        </div>
+        <div class="events-editor-list" id="eventsEditor"></div>
+      </div>
+      <p class="content-editor-hint content-editor-wide">Sube primero la foto desde tu dispositivo con «Subir fotos o videos»; después selecciónala aquí. El encuadre se guarda para todas las visitas.</p>
+      <div class="content-editor-actions content-editor-wide">
+        <button class="gallery-submit" type="submit">Guardar cambios</button>
+        <button class="gallery-cancel" id="contentCancel" type="button">Cancelar</button>
+      </div>
+    </form>
+    <p class="gallery-status" id="galleryStatus" aria-live="polite"></p>
+    <div class="gallery-editor" id="galleryEditor" hidden></div>
+  </section>
+
+  <!-- Carta -->
+  <section>
+    <div class="letter">
+      <div class="label">Carta</div>
+      <div id="letterBody"></div>
+    </div>
+    <div class="proposal-ask">
+      <div class="ask" id="ask"></div>
+      <div class="choice-buttons">
+        <button class="yes" id="yes" type="button">Sí, quiero ♥</button>
+        <button class="no" id="no" type="button">No quiero</button>
+      </div>
+      <p class="no-message" id="no-message" aria-live="polite">¿Crees que te vas a librar de mí?</p>
+    </div>
+  </section>
+
+  <!-- Línea del tiempo -->
+  <section>
+    <div class="label" style="text-align:center">Recuerdos</div>
+    <h2>Nuestra línea del tiempo</h2>
+    <div class="counter">
+      <h2>Llevamos juntos</h2>
+      <div class="nums">
+        <div><b id="days">0</b><small>DÍAS</small></div>
+        <div><b id="hours">0</b><small>HORAS</small></div>
+        <div><b id="minutes">0</b><small>MINUTOS</small></div>
+        <div><b id="seconds">0</b><small>SEGUNDOS</small></div>
+      </div>
+    </div>
+    <p class="since" id="since"></p>
+    <div class="place" id="place"></div>
+    <div class="timeline" id="timeline"></div>
+
+  </section>
+
+  <!-- Foto final -->
+  <div class="final-photo" id="finalPhoto">
+    <div class="photo" data-photo="final"></div>
+    <div class="final-text">
+      <div class="h">♥</div>
+      <h3 id="finalNames"></h3>
+      <p id="finalMsg"></p>
+      <small id="finalSign"></small>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="Propuesta.js"></script>
+</body>
+</html>
