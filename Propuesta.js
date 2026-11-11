@@ -535,7 +535,6 @@ function moveGalleryItem(from, to) {
   saveGalleryOrder();
 }
 
-// CORRECCIÓN PARA EVITAR CACHÉ EN MÓVILES: Se añade parámetro único _t en el fetch
 function readGalleryOrder() {
   return galleryStorage.ref(ORDER_PATH).getDownloadURL()
     .then(url => fetch(`${url}${url.includes('?') ? '&' : '?'}_t=${Date.now()}`))
