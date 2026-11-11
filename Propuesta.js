@@ -8,7 +8,7 @@ let heroCrop = { x: 50, y: 50, zoom: 100 };
 let pendingHeroFile = null;
 let heroPreviewObjectUrl = null;
 const CONFIG = {
-  to: "Sofía",
+  to: "Ana",
   couple: "Ana y Danna",
   from: "De Danna",
   startDate: "2026-11-11",
@@ -20,7 +20,6 @@ const CONFIG = {
     hero: "imagenes/5.png",
     final: "imagenes/6.png",
     gallery: [
-      "imagenes/1.png",
       "imagenes/2.png",
       "imagenes/3.png",
       "imagenes/4.png",
@@ -51,9 +50,7 @@ const CONFIG = {
     { date: "2024-12-12", title: "Nuestra primera vez en la nieve", avatar: "",
       text: "Nunca voy a olvidar la primera vez que vimos la nieve juntos. Entre el frío, las risas y los abrazos para entrar en calor, ese día se convirtió en uno de mis recuerdos favoritos contigo." },
     { date: "2026-08-02", title: "La primera vez que nos vimos", avatar: "",
-      text: "El día que por fin nos vimos en persona. Un momento que guardo con muchísimo cariño y que se convirtió en un recuerdo muy especial de nuestra historia." },
-    { date: "2026-01-12", title: "Nuestra casa juntos", avatar: "",
-      text: "Tener una casa contigo siempre fue mucho más que tener cuatro paredes. Es el lugar donde empezamos a construir nuestros sueños, donde cada rincón guarda un recuerdo y donde, poco a poco, estamos creando nuestro hogar." }
+      text: "El día que por fin nos vimos en persona. Un momento que guardo con muchísimo cariño y que se convirtió en un recuerdo muy especial de nuestra historia." }
   ],
 
   final: { message: "Te amo, hoy y siempre", sign: "— Danna" },
