@@ -225,6 +225,8 @@ section{padding:3.2rem 1.4rem 0}
 /* ---------- Línea del tiempo ---------- */
 .counter{text-align:center;margin:1.4rem 0 .6rem}
 .counter h2{margin:0 0 1rem;font-style:italic}
+.counter-reset{margin-top:.9rem;padding:.45rem .8rem;border:1px solid var(--rose-200);color:var(--wine);font-size:.75rem}
+.counter-reset[hidden]{display:none}
 .nums{display:flex;justify-content:center;gap:clamp(.65rem,4vw,1.35rem)}
 .nums>div{min-width:3.4rem}
 .nums b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,7vw,2rem);font-variant-numeric:tabular-nums;color:var(--wine);line-height:1}

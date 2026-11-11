@@ -34,7 +34,7 @@ const CONFIG = {
   letter: [
     "Hola, mis hoyuelitos lindos. ¿Cómo estás? Yo estoy bien y feliz de tenerte a mi lado. Desde que te conozco soy feliz, y esa felicidad tiene marcado tu nombre. ¿Sabes? Nunca llegué a imaginar que serías tú quien lograría sacarme de aquel bloqueo, que fueses tú quien hiciera que mi corazón se emocionara y sintiera paz cada vez que está a tu lado.",
     "Sé que no suelo hacer esto muy seguido, pero te prometo que, a partir de hoy, te conquistaré todos los días; porque te podré tener a mi lado, pero siempre haré que te enamores más y más de mí. Me alegro por haberte conocido, me alegro de haber hecho ese live y me alegro demasiado de que tus ojos se hubieran posado en mí.",
-    "Desde que te conozco descubrí el significado de sentirse amada. Estoy experimentando cosas nuevas, emociones nuevas, detalles nuevos; cada cosa que antes ni había hecho y que estuve reservando para la mujer que me demostrara que de verdad valía la pena. Tú lo hiciste: me demostraste lo que es tener a una mujer a mi lado, una mujer que ama, que siente, que no le apena expresar lo que siente, y con cada día que pasa te adueñas más de mi corazón.",
+    "Desde que te conozco descubrí el significado de sentirse amada. Estoy experimentando cosas nuevas, emociones nuevas, detalles nuevas; cada cosa que antes ni había hecho y que estuve reservando para la mujer que me demostrara que de verdad valía la pena. Tú lo hiciste: me demostraste lo que es tener a una mujer a mi lado, una mujer que ama, que siente, que no le apena expresar lo que siente, y con cada día que pasa te adueñas más de mi corazón.",
     "El día de hoy, 11 de noviembre, quiero que quede de recuerdo para las dos, no solo por hoy; quiero que quede para el resto de nuestras vidas. Quiero que, cuando estemos las dos en un altar, pueda decirte estas mismas palabras y terminar con un: «Y hoy te proclamo como mi esposa».",
     "Quiero que en cada paso que dé me acompañes, que en cada situación que pase estés presente, quiero que seas quien me despierte cuando me quede dormida, quien me abrace cuando no logre conciliar el sueño, quien me apoye y se quede a mi lado cuando trasnoche. Quiero que seas tú la mujer que esté conmigo, y quiero serlo yo para ti.",
     "Eres una chica increíble, y las veces que no logres verlo recuerda esta carta, recuerda lo mucho que te amo. Te prometo que cada noche y cada día te lo recordaré, te recordaré lo maravillosa y talentosa que eres, y cada detalle, por mínimo que sea de ti. Soy impaciente, soy impulsiva, soy evasiva... soy tantas cosas que simplemente a veces no logro entender por qué eres tan comprensiva conmigo. Pero luego recuerdo las veces que, llorando, pedí unos brazos comprensivos, un corazón amable y una persona maravillosa, y llegaste tú.",
@@ -226,6 +226,33 @@ $("#yes").addEventListener("click", async () => {
     : result === "not-configured"
       ? "El aviso por correo aún no está configurado."
       : "No se pudo enviar el aviso por correo.";
+});
+
+$("#counterReset").addEventListener("click", () => {
+  if (!isGalleryAdmin() || !window.confirm("¿Reiniciar el contador en este navegador? Esto no deshace la respuesta ni el correo enviado.")) return;
+  try { localStorage.removeItem(COUNTER_KEY); } catch (error) {}
+  if (counterTimer) clearInterval(counterTimer);
+  counterTimer = null;
+  counterStart = null;
+  $("#days").textContent = "0";
+  $("#hours").textContent = "0";
+  $("#minutes").textContent = "0";
+  $("#seconds").textContent = "0";
+  $("#since").textContent = "";
+  $("#yes").disabled = false;
+  $("#yes").classList.remove("accepted", "glow");
+  $("#no").disabled = false;
+  $("#no").hidden = false;
+  $("#no").classList.remove("no-flying");
+  $("#no").style.left = "";
+  $("#no").style.top = "";
+  $("#no").style.transform = "";
+  $("#no").textContent = "No quiero";
+  $("#no-message").textContent = "¿Crees que te vas a librar de mí?";
+  $("#no-message").style.display = "none";
+  $("#answerStatus").textContent = "";
+  noAttempts = 0;
+  $("#galleryStatus").textContent = "Contador reiniciado en este navegador.";
 });
 
 let noAttempts = 0;
@@ -507,22 +534,26 @@ function moveGalleryItem(from, to) {
   renderGallery(item.id);
   saveGalleryOrder();
 }
+
+// CORRECCIÓN PARA EVITAR CACHÉ EN MÓVILES: Se añade parámetro único _t en el fetch
 function readGalleryOrder() {
   return galleryStorage.ref(ORDER_PATH).getDownloadURL()
-    .then(url => fetch(url))
+    .then(url => fetch(`${url}${url.includes('?') ? '&' : '?'}_t=${Date.now()}`))
     .then(response => response.ok ? response.json() : null)
     .then(data => Array.isArray(data)
       ? { items: data, hidden: [] }
       : { items: Array.isArray(data?.items) ? data.items : [], hidden: Array.isArray(data?.hidden) ? data.hidden : [] })
     .catch(() => ({ items: [], hidden: [] }));
 }
+
 function readSharedContent() {
   return galleryStorage.ref(CONTENT_PATH).getDownloadURL()
-    .then(url => fetch(url))
+    .then(url => fetch(`${url}${url.includes('?') ? '&' : '?'}_t=${Date.now()}`))
     .then(response => response.ok ? response.json() : null)
     .then(data => { if (data) applyEditableContent(data); })
     .catch(() => {});
 }
+
 function editableContentFromForm() {
   return {
     to: $("#editTo").value.trim(),
@@ -718,6 +749,7 @@ function initializeGallerySharing() {
       $("#galleryAdd").hidden = !canManage;
       $("#galleryArrange").hidden = !canManage;
       $("#contentEdit").hidden = !canManage;
+      $("#counterReset").hidden = !canManage;
       if (!canManage) {
         $("#galleryEditor").hidden = true;
         $("#contentEditor").hidden = true;
@@ -859,4 +891,3 @@ $("#galleryInput").onchange = event => {
 };
 renderGallery();
 initializeGallerySharing();
-
