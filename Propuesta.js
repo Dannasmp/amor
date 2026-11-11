@@ -47,6 +47,8 @@ const CONFIG = {
   events: [
     { date: "2024-07-05", title: "Nuestro primer mensaje", avatar: "",
       text: "Un mensaje que marcó el comienzo de una historia muy especial para las dos. Desde ese día empezamos a acercarnos y a crear recuerdos juntas." },
+    { date: "2024-12-12", title: "Nuestra primera vez en la nieve", avatar: "",
+      text: "Nunca voy a olvidar la primera vez que vimos la nieve juntos. Entre el frío, las risas y los abrazos para entrar en calor, ese día se convirtió en uno de mis recuerdos favoritos contigo." },
     { date: "2026-08-02", title: "La primera vez que nos vimos", avatar: "",
       text: "El día que por fin nos vimos en persona. Un momento que guardo con muchísimo cariño y que se convirtió en un recuerdo muy especial de nuestra historia." }
   ],
