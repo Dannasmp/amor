@@ -81,6 +81,26 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "408819531565",
   appId: "1:408819531565:web:3deb097257cad4396e9da4"
 };
+const EMAILJS_CONFIG = {
+  serviceId: "",
+  templateId: "",
+  publicKey: ""
+};
+
+async function sendAcceptanceNotification() {
+  const { serviceId, templateId, publicKey } = EMAILJS_CONFIG;
+  if (!serviceId || !templateId || !publicKey || !window.emailjs) return "not-configured";
+  try {
+    await window.emailjs.send(serviceId, templateId, {
+      accepted_at: new Date().toLocaleString("es-ES"),
+      page_url: window.location.href
+    }, { publicKey });
+    return "sent";
+  } catch (error) {
+    console.error("No se pudo enviar el aviso por correo.", error);
+    return "failed";
+  }
+}
 
 function setPhoto(el, url) {
   if (url) { el.style.backgroundImage = `url("${url}")`; el.classList.remove("ph"); }
@@ -195,11 +215,19 @@ function startCounter(timestamp) {
 
 const configuredStart = () => new Date(`${CONFIG.startDate}T00:00:00`).getTime();
 
-$("#yes").addEventListener("click", () => {
+$("#yes").addEventListener("click", async () => {
   const timestamp = configuredStart();
   try { localStorage.setItem(COUNTER_KEY, timestamp); } catch (error) {}
   startCounter(timestamp);
   $("#days").closest(".counter").scrollIntoView({ behavior: "smooth", block: "center" });
+  const status = $("#answerStatus");
+  status.textContent = "Enviando el aviso por correo...";
+  const result = await sendAcceptanceNotification();
+  status.textContent = result === "sent"
+    ? "Te llegará un correo con su respuesta."
+    : result === "not-configured"
+      ? "El aviso por correo aún no está configurado."
+      : "No se pudo enviar el aviso por correo.";
 });
 
 let noAttempts = 0;

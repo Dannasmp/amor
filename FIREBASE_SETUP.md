@@ -14,3 +14,14 @@ La configuracion web de Firebase se puede incluir en el sitio. Las reglas de Sto
 Propuesta usa el mismo inicio de sesion y la misma carpeta `recuerdos/` para fotos y videos. En la pagina, pulsa el corazon de la galeria e inicia sesion como `dannasmp44@gmail.com`. El panel permite subir archivos, organizar la galeria, quitar elementos y editar textos, carta, fotos y encuadre de portada.
 
 El orden y los elementos locales ocultos se guardan en `config/propuesta-galeria.json`; los textos y ajustes de imagen se guardan en `config/propuesta-contenido.json`. Ambos se pueden leer publicamente y solo la cuenta verificada puede modificarlos. Publica las reglas actualizadas de `firebase-storage.rules`; sin ellas se podran ver los medios, pero no guardar estos cambios ni eliminar archivos subidos.
+
+## Aviso por correo cuando responde "Si"
+
+La respuesta se envia con EmailJS desde `Propuesta.html`. Para activarla:
+
+1. Crea una cuenta en EmailJS y conecta el servicio de correo que quieras usar.
+2. Crea una plantilla con destinatario fijo `dannasmp44@gmail.com`, asunto `Te dijo que SI` y un cuerpo que incluya `{{accepted_at}}` y `{{page_url}}`.
+3. En las restricciones de EmailJS, permite solo el dominio HTTPS donde publiques este sitio.
+4. Copia el Service ID, Template ID y Public Key de EmailJS en `EMAILJS_CONFIG` al inicio de `Propuesta.js`.
+
+La pagina confirma cuando el correo se envia o si falta configurar EmailJS. El Public Key se usa en el navegador; no pongas claves privadas ni contrasenas en el codigo.

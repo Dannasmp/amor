@@ -220,6 +220,7 @@ section{padding:3.2rem 1.4rem 0}
 @keyframes yes-glow{to{box-shadow:0 0 0 5px rgba(196,86,106,.2),0 0 28px rgba(196,86,106,.55);transform:scale(1.05)}}
 .no-flying{position:fixed;z-index:30;margin:0;white-space:nowrap}
 .no-message{display:none;margin:1rem 0 0;color:var(--wine);font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.05rem}
+.answer-status{min-height:1.4em;margin:.5rem 0 0;color:var(--wine);font-size:.9rem}
 
 /* ---------- Línea del tiempo ---------- */
 .counter{text-align:center;margin:1.4rem 0 .6rem}
